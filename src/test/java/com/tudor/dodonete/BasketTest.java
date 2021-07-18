@@ -68,15 +68,15 @@ class BasketTest {
     }
 
     @Test
-    public void testMultiPriceButFailParsing() {
+    public void testMultiPriceButFailInputFormat() {
         String input = "A,3,C";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B", "C");
         try {
             Basket.setSpecialDeal(in, productSet);
             fail("Expected NumberFormatException");
-        } catch (ScannerException e) {
-            assertEquals("C", e.getMessage());
+        } catch (NumberFormatException e) {
+            assertTrue(e.getMessage().contains("C"));
         }
     }
 
@@ -104,7 +104,7 @@ class BasketTest {
 
     @Test
     public void testPackageDealButFailFormat() {
-        String input = "D;2";
+        String input = "D";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B", "C", "D");
         try {
@@ -124,7 +124,7 @@ class BasketTest {
             Basket.setSpecialDeal(in, productSet);
             fail("Expected NumberFormatException");
         } catch (NumberFormatException e) {
-            assertEquals("C", e.getMessage());
+            assertTrue(e.getMessage().contains("C"));
         }
     }
 
@@ -152,7 +152,7 @@ class BasketTest {
 
     @Test
     public void testMealDealButFailFormat() {
-        String input = "D:C,3";
+        String input = "D/C,3,C";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B", "C", "D");
         try {
@@ -172,13 +172,13 @@ class BasketTest {
             Basket.setSpecialDeal(in, productSet);
             fail("Expected NumberFormatException");
         } catch (NumberFormatException e) {
-            assertEquals("A", e.getMessage());
+            assertTrue(e.getMessage().contains("A"));
         }
     }
 
     @Test
-    public void testMealDealButProductNotFound(){
-        String input = "C/D,A";
+    public void testMealDealButProductNotFound() {
+        String input = "D/E,5";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B", "C", "D");
         try {

@@ -22,7 +22,7 @@ public class Basket {
         return productMap;
     }
 
-    public Set<SpecialDeal> setSpecialDeal(InputStream in, Set<String> availableProducts) {
+    public static Set<SpecialDeal> setSpecialDeal(InputStream in, Set<String> availableProducts) {
         Scanner scanner = new Scanner(in);
         var specialDealSet = new HashSet<SpecialDeal>();
         System.out.println("If you want to create a Multi Price Deal enter via comma delimited input, the SKU Name followed by quantity and price");
@@ -40,10 +40,23 @@ public class Basket {
                 if (value.split(",").length != 2) {
                     throw new ScannerException("Incorrect format");
                 }
-
+                specialDealSet.add(new SpecialDeal(mealDealProducts, Double.parseDouble(value.split(",")[1])));
             } else {
+                if (!availableProducts.contains(product)) {
+                    throw new ProductException("Product does not exist or already has a deal assign to it");
+                }
 
+                if (value.split(",").length > 3 || value.split(",").length < 2) {
+                    throw new ScannerException("Incorrect format");
+                }
+
+                if (value.split(",").length == 2) {
+                    specialDealSet.add(new SpecialDeal(product, Integer.parseInt(value.split(",")[1])));
+                } else {
+                    specialDealSet.add(new SpecialDeal(product, Integer.parseInt(value.split(",")[1]), Double.parseDouble(value.split(",")[2])));
+                }
             }
         }
+        return specialDealSet;
     }
 }
