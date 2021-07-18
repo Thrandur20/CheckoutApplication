@@ -1,13 +1,16 @@
 package com.tudor.dodonete;
 
-import org.junit.Test;
+
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 
 class CheckoutApplicationMainTest {
 
@@ -22,11 +25,27 @@ class CheckoutApplicationMainTest {
         System.setIn(sysBack);
     }
 
-    @Test(expected = ScannerException.class)
+    @Test
     public void testDataInsertButFailWithScannerException() {
         String input = "A";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        Basket.addProducts(in);
+        try {
+            Basket.addProducts(in);
+        }catch (ScannerException e){
+            assertEquals("Incorrect format", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testDataInsertButFailParsing(){
+        String input = "A,B";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        try{
+            Basket.addProducts(in);
+            fail("Expected NumberFormatException");
+        }catch (NumberFormatException e){
+
+        }
     }
 
     private Map<String, Double> productList() {
