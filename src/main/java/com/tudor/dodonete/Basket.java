@@ -2,6 +2,7 @@ package com.tudor.dodonete;
 
 import java.io.InputStream;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Basket {
     public Basket() {
@@ -22,7 +23,7 @@ public class Basket {
         return productMap;
     }
 
-    public static Set<SpecialDeal> setSpecialDeal(InputStream in, Set<String> availableProducts) {
+    public static Set<SpecialDeal> setSpecialDeal(InputStream in) {
         Scanner scanner = new Scanner(in);
         var specialDealSet = new HashSet<SpecialDeal>();
         System.out.println("If you want to create a Multi Price Deal enter via comma delimited input, the SKU Name followed by quantity and price");
@@ -34,7 +35,7 @@ public class Basket {
             var product = value.split(",")[0];
             if (product.split("/").length > 1) {
                 var mealDealProducts = new HashSet<>(Arrays.asList(product.split("/")));
-                if (!availableProducts.containsAll(mealDealProducts)) {
+                if (specialDealSet.stream().map(SpecialDeal::getSkuName).collect(Collectors.toSet()).containsAll(mealDealProducts)) {
                     throw new ProductException("Product does not exist or already has a deal assign to it");
                 }
                 if (value.split(",").length != 2) {
@@ -42,7 +43,7 @@ public class Basket {
                 }
                 specialDealSet.add(new SpecialDeal(mealDealProducts, Double.parseDouble(value.split(",")[1]), SpecialDealType.MEAL_DEAL));
             } else {
-                if (!availableProducts.contains(product)) {
+                if (specialDealSet.stream().map(SpecialDeal::getSkuName).collect(Collectors.toSet()).contains(product)) {
                     throw new ProductException("Product does not exist or already has a deal assign to it");
                 }
 

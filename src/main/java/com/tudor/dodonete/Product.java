@@ -7,6 +7,7 @@ public class Product {
     private double price;
     private boolean hasDeal;
     private SpecialDealType specialDealType;
+    private SpecialDeal specialDeal;
 
     public Product(String skuName, double price, boolean hasDeal, SpecialDealType specialDealType) {
         this.skuName = skuName;
@@ -19,6 +20,14 @@ public class Product {
         this.skuName = skuName;
         this.price = price;
         this.hasDeal = false;
+    }
+
+    public Product(String skuName, double price, boolean hasDeal, SpecialDealType specialDealType, SpecialDeal specialDeal) {
+        this.skuName = skuName;
+        this.price = price;
+        this.hasDeal = hasDeal;
+        this.specialDealType = specialDealType;
+        this.specialDeal = specialDeal;
     }
 
     public String getSkuName() {
@@ -51,6 +60,14 @@ public class Product {
 
     public void setSpecialDealType(SpecialDealType specialDealType) {
         this.specialDealType = specialDealType;
+    }
+
+    public SpecialDeal getSpecialDeal() {
+        return specialDeal;
+    }
+
+    public void setSpecialDeal(SpecialDeal specialDeal) {
+        this.specialDeal = specialDeal;
     }
 
     @Override

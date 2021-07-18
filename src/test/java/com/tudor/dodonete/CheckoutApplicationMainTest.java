@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -38,7 +39,14 @@ class CheckoutApplicationMainTest {
 
         ByteArrayInputStream in = new ByteArrayInputStream(userInputString.getBytes());
         var expectedResult = specialDeals();
-        assertEquals(expectedResult.size(), Basket.setSpecialDeal(in, existingProducts).size());
+        assertEquals(expectedResult.size(), Basket.setSpecialDeal(in).size());
+    }
+
+    @Test
+    public void testCalculation() {
+        var inputBasket = List.of("A", "A", "A", "B", "B", "B", "B", "C", "C", "C", "C", "C", "D", "D", "D", "E", "E");
+        var totalPrice = CheckoutApplicationMain.calculateTotal(inputBasket, defaultProductList());
+        System.out.println(totalPrice);
     }
 
     private Map<String, Double> productList() {
@@ -52,9 +60,19 @@ class CheckoutApplicationMainTest {
     }
 
     private Set<SpecialDeal> specialDeals() {
-        return Set.of(new SpecialDeal("B", 2, 1, MEAL_DEAL),
-                new SpecialDeal("C", 2, PACKAGE_DEAL),
-                new SpecialDeal(Set.of("D", "E"), 3.25, MULTI_PRICED_DEAL));
+        return Set.of(new SpecialDeal("B", 2, 1, MULTI_PRICED_DEAL),
+                new SpecialDeal("C", 3, PACKAGE_DEAL),
+                new SpecialDeal(Set.of("D", "E"), 3.25, MEAL_DEAL));
+    }
+
+    private List<Product> defaultProductList() {
+        return List.of(
+                new Product("A", 0.5),
+                new Product("B", 0.6, true, MULTI_PRICED_DEAL, new SpecialDeal("B", 2, 1, MULTI_PRICED_DEAL)),
+                new Product("C", 0.25, true, PACKAGE_DEAL, new SpecialDeal("C", 3, PACKAGE_DEAL)),
+                new Product("D", 1.5, true, MEAL_DEAL, new SpecialDeal(Set.of("D", "E"), 3.25, MEAL_DEAL)),
+                new Product("E", 2.0, true, MEAL_DEAL, new SpecialDeal(Set.of("D", "E"), 3.25, MEAL_DEAL))
+        );
     }
 
 }
