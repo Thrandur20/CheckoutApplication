@@ -6,6 +6,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,32 +50,48 @@ class BasketTest {
     public void testValidMultiPrice() {
         String input = "A,3,2";
         SpecialDeal specialDeal = new SpecialDeal("A", 3, 2);
+        var productSet = Set.of("A", "B", "C");
         var expectedResult = List.of(specialDeal);
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        assertEquals(expectedResult, Basket.setMultiPriceDeals(in));
+        assertEquals(expectedResult, Basket.setMultiPriceDeals(in, productSet));
     }
 
     @Test
-    public void testMultiPriceButFailWithScannerException(){
+    public void testMultiPriceButFailWithScannerException() {
         String input = "A,B,C,D";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        try{
-            Basket.setMultiPriceDeals(in);
+        var productSet = Set.of("A", "B", "C");
+        try {
+            Basket.setMultiPriceDeals(in, productSet);
             fail("Should have thrown a Scanner Exception");
-        }catch (ScannerException e){
+        } catch (ScannerException e) {
             assertEquals("Incorrect format", e.getMessage());
         }
     }
 
     @Test
-    public void testMultiPriceButFailParsing(){
+    public void testMultiPriceButFailParsing() {
         String input = "A,3,C";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        try{
-            Basket.setMultiPriceDeals(in);
+        var productSet = Set.of("A", "B", "C");
+        try {
+            Basket.setMultiPriceDeals(in, productSet);
             fail("Expected NumberFormatException");
-        }catch (ScannerException e){
+        } catch (ScannerException e) {
             assertEquals("C", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testMultiPriceButFailWihNonExistingProduct() {
+        String input = "D,2,1";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B", "C");
+        try {
+            Basket.setMultiPriceDeals(in, productSet);
+            fail("Expected ProductException");
+        } catch (ProductException e) {
+            assertEquals("The product entered does not exist", e.getMessage());
         }
     }
 }
