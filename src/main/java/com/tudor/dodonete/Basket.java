@@ -18,7 +18,9 @@ public class Basket {
             if (value.split(",").length != 2) {
                 throw new ScannerException("Incorrect format");
             }
+            String skuValue = value.split(",")[0];
+            productMap.put(skuValue, Double.parseDouble(value.split(",")[1]));
         }
-        return null;
+        return productMap;
     }
 }

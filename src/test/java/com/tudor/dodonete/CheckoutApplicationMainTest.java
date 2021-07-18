@@ -8,8 +8,7 @@ import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 class CheckoutApplicationMainTest {
@@ -44,7 +43,7 @@ class CheckoutApplicationMainTest {
             Basket.addProducts(in);
             fail("Expected NumberFormatException");
         }catch (NumberFormatException e){
-
+            assertTrue(e.getMessage().contains("B"));
         }
     }
 
