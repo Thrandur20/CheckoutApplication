@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -49,11 +48,10 @@ class BasketTest {
     @Test
     public void testValidMultiPrice() {
         String input = "A,3,2";
-        SpecialDeal specialDeal = new SpecialDeal("A", 3, 2);
         var productSet = Set.of("A", "B", "C");
-        var expectedResult = List.of(specialDeal);
+        var expectedResult = Set.of(new SpecialDeal("A", 3, 2));
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        assertEquals(expectedResult, Basket.setMultiPriceDeals(in, productSet));
+        assertEquals(expectedResult, Basket.setSpecialDeal(in, productSet));
     }
 
     @Test
@@ -62,8 +60,8 @@ class BasketTest {
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B", "C");
         try {
-            Basket.setMultiPriceDeals(in, productSet);
-            fail("Should have thrown a Scanner Exception");
+            Basket.setSpecialDeal(in, productSet);
+            fail("Expected ScannerException");
         } catch (ScannerException e) {
             assertEquals("Incorrect format", e.getMessage());
         }
@@ -75,7 +73,7 @@ class BasketTest {
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B", "C");
         try {
-            Basket.setMultiPriceDeals(in, productSet);
+            Basket.setSpecialDeal(in, productSet);
             fail("Expected NumberFormatException");
         } catch (ScannerException e) {
             assertEquals("C", e.getMessage());
@@ -88,10 +86,106 @@ class BasketTest {
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B", "C");
         try {
-            Basket.setMultiPriceDeals(in, productSet);
+            Basket.setSpecialDeal(in, productSet);
             fail("Expected ProductException");
         } catch (ProductException e) {
-            assertEquals("The product entered does not exist", e.getMessage());
+            assertEquals("Product does not exist or already has a deal assign to it", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidPackageDeal() {
+        String input = "D,3";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B", "C", "D");
+        var expectedResult = Set.of(new SpecialDeal("D", 3));
+        assertEquals(expectedResult, Basket.setSpecialDeal(in, productSet));
+    }
+
+    @Test
+    public void testPackageDealButFailFormat() {
+        String input = "D;2";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B", "C", "D");
+        try {
+            Basket.setSpecialDeal(in, productSet);
+            fail("Expected Scanner Exception");
+        } catch (ScannerException e) {
+            assertEquals("Incorrect format", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testPackageDealButFailParsing() {
+        String input = "D,C";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B", "C", "D");
+        try {
+            Basket.setSpecialDeal(in, productSet);
+            fail("Expected NumberFormatException");
+        } catch (NumberFormatException e) {
+            assertEquals("C", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testPackageDealButProductDoesNotExist() {
+        String input = "D,2";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B");
+        try {
+            Basket.setSpecialDeal(in, productSet);
+            fail("Expected ProductException");
+        } catch (ProductException e) {
+            assertEquals("Product does not exist or already has a deal assign to it", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testValidMealDeal() {
+        String input = "A\\B,3";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B");
+        var expectedResult = Set.of(new SpecialDeal(Set.of("A", "B"), 3));
+        assertEquals(expectedResult, Basket.setSpecialDeal(in, productSet));
+    }
+
+    @Test
+    public void testMealDealButFailFormat() {
+        String input = "D/C,3";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B", "C", "D");
+        try {
+            Basket.setSpecialDeal(in, productSet);
+            fail("Expected ScannerException");
+        } catch (ScannerException e) {
+            assertEquals("Incorrect format", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testMealDealButFailParsing() {
+        String input = "C\\D,A";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B", "C", "D");
+        try {
+            Basket.setSpecialDeal(in, productSet);
+            fail("Expected NumberFormatException");
+        } catch (NumberFormatException e) {
+            assertEquals("A", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testMealDealButProductNotFound(){
+        String input = "C\\D,A";
+        ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
+        var productSet = Set.of("A", "B", "C", "D");
+        try {
+            Basket.setSpecialDeal(in, productSet);
+            fail("Expected NumberFormatException");
+        } catch (ProductException e) {
+            assertEquals("Product does not exist or already has a deal assign to it", e.getMessage());
         }
     }
 }
