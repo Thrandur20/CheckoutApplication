@@ -40,9 +40,12 @@ public class CheckoutApplicationMain {
             }
         });
 
+        System.out.println("Start entering the products in the basket, type exit to finish");
         var basketEntries = inputBasket(System.in, productSetup.keySet());
 
-        System.out.println(calculateTotal(basketEntries, products));
+        System.out.println("Calculation starting...");
+        double totalPrice = calculateTotal(basketEntries, products);
+        System.out.println("TOTAL PRICE: " + totalPrice);
     }
 
     public static List<String> inputBasket(InputStream in, Set<String> availableProducts) {
