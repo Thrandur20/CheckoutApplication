@@ -7,7 +7,7 @@ import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.Map;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertEquals;
 
 class CheckoutApplicationMainTest {
 
@@ -22,11 +22,11 @@ class CheckoutApplicationMainTest {
         System.setIn(sysBack);
     }
 
-    @Test
-    public void testDataInsertButFailFormat() throws Exception {
+    @Test(expected = ScannerException.class)
+    public void testDataInsertButFailWithScannerException() {
         String input = "A";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
-        fail(Basket.addProducts());
+        Basket.addProducts(in);
     }
 
     private Map<String, Double> productList() {
