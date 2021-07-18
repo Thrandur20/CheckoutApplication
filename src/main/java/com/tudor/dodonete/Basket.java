@@ -40,7 +40,7 @@ public class Basket {
                 if (value.split(",").length != 2) {
                     throw new ScannerException("Incorrect format");
                 }
-                specialDealSet.add(new SpecialDeal(mealDealProducts, Double.parseDouble(value.split(",")[1])));
+                specialDealSet.add(new SpecialDeal(mealDealProducts, Double.parseDouble(value.split(",")[1]), SpecialDealType.MEAL_DEAL));
             } else {
                 if (!availableProducts.contains(product)) {
                     throw new ProductException("Product does not exist or already has a deal assign to it");
@@ -51,9 +51,10 @@ public class Basket {
                 }
 
                 if (value.split(",").length == 2) {
-                    specialDealSet.add(new SpecialDeal(product, Integer.parseInt(value.split(",")[1])));
+                    specialDealSet.add(new SpecialDeal(product, Integer.parseInt(value.split(",")[1]), SpecialDealType.PACKAGE_DEAL));
                 } else {
-                    specialDealSet.add(new SpecialDeal(product, Integer.parseInt(value.split(",")[1]), Double.parseDouble(value.split(",")[2])));
+                    specialDealSet.add(new SpecialDeal(product, Integer.parseInt(value.split(",")[1]),
+                            Double.parseDouble(value.split(",")[2]), SpecialDealType.MULTI_PRICED_DEAL));
                 }
             }
         }

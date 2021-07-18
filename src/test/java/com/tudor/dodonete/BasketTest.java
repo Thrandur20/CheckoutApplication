@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Set;
 
+import static com.tudor.dodonete.SpecialDealType.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BasketTest {
@@ -49,7 +50,7 @@ class BasketTest {
     public void testValidMultiPrice() {
         String input = "A,3,2";
         var productSet = Set.of("A", "B", "C");
-        var expectedResult = Set.of(new SpecialDeal("A", 3, 2));
+        var expectedResult = Set.of(new SpecialDeal("A", 3, 2, MULTI_PRICED_DEAL));
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         assertEquals(expectedResult, Basket.setSpecialDeal(in, productSet));
     }
@@ -98,7 +99,7 @@ class BasketTest {
         String input = "D,3";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B", "C", "D");
-        var expectedResult = Set.of(new SpecialDeal("D", 3));
+        var expectedResult = Set.of(new SpecialDeal("D", 3, PACKAGE_DEAL));
         assertEquals(expectedResult, Basket.setSpecialDeal(in, productSet));
     }
 
@@ -146,7 +147,7 @@ class BasketTest {
         String input = "A/B,3";
         ByteArrayInputStream in = new ByteArrayInputStream(input.getBytes());
         var productSet = Set.of("A", "B");
-        var expectedResult = Set.of(new SpecialDeal(Set.of("A", "B"), 3));
+        var expectedResult = Set.of(new SpecialDeal(Set.of("A", "B"), 3, MEAL_DEAL));
         assertEquals(expectedResult, Basket.setSpecialDeal(in, productSet));
     }
 
